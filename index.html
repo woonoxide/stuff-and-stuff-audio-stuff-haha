@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>gserver – official page</title>
+    <style>
+        body {
+            background: #0e0e0e;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            width: 900px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .statusBox {
+            padding: 15px;
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            border-left: 5px solid #444;
+        }
+        .online { border-color: #00ff85 !important; }
+        .offline { border-color: #ff4b4b !important; }
+        .section {
+            background: #1a1a1a;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        iframe {
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        a.button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px 0;
+            background: #444;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        a.button:hover { background: #666; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>gserver</h1>
+
+    <!-- SERVER STATUS -->
+    <div id="status" class="statusBox">checking server status...</div>
+
+    <script>
+        async function checkStatus() {
+            try {
+                // YOUR GMOD SERVER IP
+                const ip = "gserver.axenthost.me:50110";
+
+                // API to check it
+                const req = await fetch(
+                    "https://api.mcsrvstat.us/2/" + ip
+                );
+
+                const data = await req.json();
+                const box = document.getElementById("status");
+
+                if (data.online) {
+                    box.classList.add("online");
+                    box.innerHTML =
+                        "🟢 Server Online<br>Players: " +
+                        data.players.online + "/" + data.players.max;
+                } else {
+                    box.classList.add("offline");
+                    box.innerHTML = "🔴 Server Offline";
+                }
+            } catch(e) {
+                document.getElementById("status").innerHTML =
+                    "error checking server";
+            }
+        }
+
+        checkStatus();
+        setInterval(checkStatus, 15000); // auto update every 15s
+    </script>
+
+
+    <!-- CONNECT BUTTON -->
+    <a class="button" href="steam://connect/gserver.axenthost.me:50110">
+        🚀 Click to Join the Server
+    </a>
+
+    <!-- WORKSHOP -->
+    <a class="button" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3060991163" target="_blank">
+        📦 Workshop Collection
+    </a>
+
+
+    <!-- CHANGELOG -->
+    <div class="section">
+        <h2>📜 Changelog</h2>
+        <p>
+            • Added Undertale-style chat voice<br>
+            • Added gPoint can system<br>
+            • Improved performance & player QoL<br>
+            • New anti-prop-spam limit<br>
+        </p>
+    </div>
+
+
+    <!-- DISCORD -->
+    <div class="section">
+        <h2>💬 Discord</h2>
+        <iframe src="https://discord.com/widget?id=1175657963176874064&theme=dark"
+            width="350" height="500"
+            allowtransparency="true"
+            frameborder="0"
+            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+        </iframe>
+    </div>
+
+</div>
+</body>
+</html>
