@@ -59,36 +59,40 @@
 
     <script>
         async function checkStatus() {
-            try {
-                // YOUR GMOD SERVER IP
-                const ip = "gserver.axenthost.me:50110";
+        const ip = "gserver.axenthost.me:50110";
+        const url = "https://api.gamemonitoring.net/servers/source/query/" + ip;
+        const box = document.getElementById("status");
 
-                // API to check it
-                const req = await fetch(
-                    "https://api.mcsrvstat.us/2/" + ip
-                );
+        try {
+            const req = await fetch(url);
+            const data = await req.json();
 
-                const data = await req.json();
-                const box = document.getElementById("status");
+            if (data && data.status === "success") {
+                const info = data.data;
 
-                if (data.online) {
-                    box.classList.add("online");
-                    box.innerHTML =
-                        "🟢 server oline<br>Players: " +
-                        data.players.online + "/" + data.players.max;
-                } else {
-                    box.classList.add("offline");
-                    box.innerHTML = "🔴 server offline";
-                }
-            } catch(e) {
-                document.getElementById("status").innerHTML =
-                    "error checking server";
+                box.classList.remove("offline");
+                box.classList.add("online");
+                box.innerHTML = `
+                🟢 server online<br>
+                    players: ${info.players}/${info.maxplayers}<br>
+                    map: ${info.map}
+                `;
+            } else {
+                box.classList.remove("online");
+                box.classList.add("offline");
+                box.innerHTML = "🔴 server offline";
             }
-        }
+        } catch (e) {
+            box.classList.remove("online");
+            box.classList.add("offline");
+            box.innerHTML = "error checking server";
+    }
+}
 
-        checkStatus();
-        setInterval(checkStatus, 15000); // auto update every 15s
+    checkStatus();
+    setInterval(checkStatus, 15000);
     </script>
+
 
 
     <!-- CONNECT BUTTON -->
